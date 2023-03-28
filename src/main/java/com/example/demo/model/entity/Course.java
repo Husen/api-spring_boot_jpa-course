@@ -2,13 +2,15 @@ package com.example.demo.model.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.experimental.Accessors;
 
 @Entity
 @Table(name = "courses")
 @Data
+@Accessors(chain = true)
 public class Course {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "title", nullable = false)

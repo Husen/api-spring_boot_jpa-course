@@ -28,6 +28,8 @@ public class CourseService implements ICourseService{
     @Autowired
     private ICourseTypeRepository courseTypeRepository;
     @Autowired
+    private IFileService fileService;
+    @Autowired
     private ModelMapper modelMapper;
 
     @Override
@@ -93,18 +95,46 @@ public class CourseService implements ICourseService{
     @Override
     public Course create(CourseRequest courseRequest) {
         try {
+//            CourseInfo saveCourseInfo = modelMapper.map(courseRequest, CourseInfo.class);
+//            CourseInfo resultCourseInfo = courseInfoRepository.save(saveCourseInfo);
+//
+//            Optional<CourseType> getIdType = courseTypeRepository.findById(courseRequest.getCourseType().getId());
+//
+//            Course saveCourse = modelMapper.map(courseRequest, Course.class);
+//
+//            saveCourse.setCourseInfo(resultCourseInfo);
+//            saveCourse.setCourseType(getIdType.get());
+//            Course returnCourse = courseRepository.save(saveCourse);
+//
+//            return returnCourse;
+
+            // new create with upload
+            String filePath = "";
+            Optional<CourseType> courseType = courseTypeRepository.findById(courseRequest.getCourseType().getId());
+            if (courseType.isEmpty()) {
+                throw new NotFoundException("Course type is not found");
+            }
+
+            if (!courseRequest.getFile().isEmpty()) {
+                filePath = fileService.uploadFile(courseRequest.getFile());
+            }
+
             CourseInfo saveCourseInfo = modelMapper.map(courseRequest, CourseInfo.class);
             CourseInfo resultCourseInfo = courseInfoRepository.save(saveCourseInfo);
 
-            Optional<CourseType> getIdType = courseTypeRepository.findById(courseRequest.getCourseType().getId());
 
             Course saveCourse = modelMapper.map(courseRequest, Course.class);
 
+            saveCourse.setLink(filePath);
             saveCourse.setCourseInfo(resultCourseInfo);
-            saveCourse.setCourseType(getIdType.get());
+            saveCourse.setCourseType(courseType.get());
             Course returnCourse = courseRepository.save(saveCourse);
 
+
+
             return returnCourse;
+
+
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

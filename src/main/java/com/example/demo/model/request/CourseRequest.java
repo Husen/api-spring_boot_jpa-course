@@ -4,6 +4,7 @@ import com.example.demo.model.entity.CourseInfo;
 import com.example.demo.model.entity.CourseType;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
+import org.springframework.web.multipart.MultipartFile;
 
 @Data
 public class CourseRequest {
@@ -11,8 +12,8 @@ public class CourseRequest {
     private String title;
     @NotBlank(message = "description {invalid.required}")
     private String description;
-    @NotBlank(message = "link {invalid.required}")
-    private String link;
+
+    private MultipartFile file;
 
     private Integer duration;
 
